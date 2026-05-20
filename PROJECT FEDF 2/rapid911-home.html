@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RAPID911 — Emergency Dispatch System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b0e16;--panel:#111520;--panel2:#181c28;--panel3:#1e2333;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);
+  --text:#e8eaf2;--muted:#6b748f;--dim:#3a4058;
+  --red:#E24B4A;--red2:#A32D2D;--red-glow:rgba(226,75,74,0.18);
+  --amber:#EF9F27;--amber-soft:rgba(239,159,39,0.14);
+  --green:#5DCAA5;--green-soft:rgba(93,202,165,0.12);
+  --blue:#378ADD;--blue-soft:rgba(55,138,221,0.13);
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+
+/* NAVBAR */
+nav{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;height:60px;
+  background:rgba(11,14,22,0.92);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);
+}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-icon{
+  width:34px;height:34px;border-radius:8px;
+  background:var(--red);display:flex;align-items:center;justify-content:center;
+}
+.brand-icon i{color:#fff;font-size:18px}
+.brand-name{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:2.5px;color:#fff}
+.brand-name span{color:var(--red)}
+.nav-links{display:flex;gap:4px}
+.nav-link{
+  padding:6px 14px;border-radius:6px;font-size:13px;font-weight:500;
+  color:var(--muted);cursor:pointer;border:none;background:transparent;
+  transition:all .15s;text-decoration:none;display:flex;align-items:center;gap:6px;
+}
+.nav-link:hover{background:var(--panel2);color:var(--text)}
+.nav-link i{font-size:15px}
+.nav-right{display:flex;align-items:center;gap:12px}
+.live-pill{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(93,202,165,0.1);border:1px solid rgba(93,202,165,0.25);
+  border-radius:20px;padding:5px 13px;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5DCAA5;
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#5DCAA5;animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.nav-clock{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--muted)}
+.notif-ico{
+  width:36px;height:36px;border-radius:8px;background:var(--panel2);
+  border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;position:relative;
+}
+.notif-ico i{color:var(--muted);font-size:18px}
+.notif-badge{
+  position:absolute;top:6px;right:6px;width:8px;height:8px;
+  border-radius:50%;background:var(--red);border:1.5px solid var(--panel);
+}
+.btn-login{
+  padding:7px 18px;border-radius:7px;font-size:13px;font-weight:500;
+  background:transparent;border:1px solid var(--border2);color:var(--text);
+  cursor:pointer;transition:all .15s;
+}
+.btn-login:hover{background:var(--panel2)}
+.btn-dispatch{
+  padding:7px 18px;border-radius:7px;font-size:13px;font-weight:600;
+  background:var(--red);border:none;color:#fff;cursor:pointer;
+  font-family:'Rajdhani',sans-serif;letter-spacing:1px;transition:all .15s;
+}
+.btn-dispatch:hover{background:var(--red2)}
+
+/* HERO */
+.hero{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:72px 40px 60px;min-height:calc(100vh - 60px);
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 70% 70% at 80% 40%,black 0%,transparent 100%);
+}
+.hero-glow{
+  position:absolute;top:-80px;right:60px;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(226,75,74,0.08) 0%,transparent 70%);
+}
+.hero-left{flex:1;max-width:560px;position:relative;z-index:2}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--red-glow);border:1px solid rgba(226,75,74,0.25);
+  border-radius:20px;padding:5px 14px;margin-bottom:28px;
+  font-size:11px;font-weight:500;color:#F09595;letter-spacing:1px;text-transform:uppercase;
+}
+.hero-tag i{font-size:13px}
+h1{
+  font-family:'Rajdhani',sans-serif;font-size:58px;font-weight:700;
+  line-height:1.05;letter-spacing:-0.5px;color:#fff;margin-bottom:24px;
+}
+h1 span{color:var(--red)}
+.hero-sub{
+  font-size:17px;line-height:1.7;color:var(--muted);
+  max-width:440px;margin-bottom:40px;
+}
+.hero-actions{display:flex;align-items:center;gap:14px;margin-bottom:52px}
+.btn-primary{
+  display:flex;align-items:center;gap:8px;
+  padding:13px 28px;border-radius:8px;
+  background:var(--red);border:none;color:#fff;
+  font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:1.5px;
+  cursor:pointer;transition:all .15s;
+}
+.btn-primary:hover{background:var(--red2)}
+.btn-primary i{font-size:18px}
+.btn-secondary{
+  display:flex;align-items:center;gap:8px;
+  padding:13px 28px;border-radius:8px;
+  background:transparent;border:1px solid var(--border2);color:var(--text);
+  font-size:15px;font-weight:500;cursor:pointer;transition:all .15s;
+}
+.btn-secondary:hover{background:var(--panel2)}
+.btn-secondary i{font-size:18px}
+
+.hero-stats{display:flex;gap:32px}
+.hstat{}
+.hstat-num{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:#fff;line-height:1}
+.hstat-num span{color:var(--red)}
+.hstat-label{font-size:12px;color:var(--muted);margin-top:3px}
+.hstat-sep{width:1px;background:var(--border2);align-self:stretch}
+
+/* HERO RIGHT — mini dashboard preview */
+.hero-right{position:relative;z-index:2;flex-shrink:0;width:460px}
+.dash-preview{
+  background:var(--panel);border:1px solid var(--border2);
+  border-radius:14px;overflow:hidden;
+}
+.dp-bar{
+  background:var(--panel2);border-bottom:1px solid var(--border);
+  padding:10px 14px;display:flex;align-items:center;gap:8px;
+}
+.dp-dots{display:flex;gap:5px}
+.dp-dot{width:9px;height:9px;border-radius:50%}
+.dp-title{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);margin-left:auto}
+.dp-body{padding:14px;display:flex;flex-direction:column;gap:10px}
+.dp-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.dp-metric{
+  background:var(--panel2);border-radius:7px;padding:10px 10px 8px;
+  border:1px solid var(--border);
+}
+.dp-metric-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.dp-metric-val{
+  font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;line-height:1.1;margin-top:2px;
+}
+.dp-metric-val.r{color:var(--red)}
+.dp-metric-val.a{color:var(--amber)}
+.dp-metric-val.g{color:var(--green)}
+.dp-metric-val.b{color:var(--blue)}
+.dp-map{
+  background:#0d1219;border-radius:8px;overflow:hidden;
+  border:1px solid var(--border);height:180px;position:relative;
+}
+.dp-map svg{width:100%;height:100%}
+.dp-inc-list{display:flex;flex-direction:column;gap:5px}
+.dp-inc{
+  display:flex;align-items:center;gap:10px;
+  background:var(--panel2);border:1px solid var(--border);
+  border-radius:7px;padding:8px 10px;
+  border-left:3px solid transparent;
+}
+.dp-inc.crit{border-left-color:var(--red)}
+.dp-inc.high{border-left-color:var(--amber)}
+.dp-inc.med{border-left-color:var(--blue)}
+.dp-inc-type{font-size:12px;font-weight:500;flex:1;color:var(--text)}
+.dp-inc-loc{font-size:11px;color:var(--muted);flex:1}
+.dp-badge{
+  font-size:9px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;
+  padding:2px 7px;border-radius:4px;
+}
+.dp-badge.crit{background:rgba(226,75,74,0.2);color:#F09595;border:1px solid rgba(226,75,74,0.3)}
+.dp-badge.high{background:rgba(239,159,39,0.2);color:#FAC775;border:1px solid rgba(239,159,39,0.3)}
+.dp-badge.med{background:rgba(55,138,221,0.2);color:#85B7EB;border:1px solid rgba(55,138,221,0.3)}
+.dp-inc-time{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.blink-dot{animation:blink 1s infinite}
+
+/* SECTION */
+section{padding:80px 40px}
+.sec-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:500;
+  color:var(--muted);margin-bottom:14px;
+}
+.sec-tag i{font-size:14px;color:var(--red)}
+.sec-title{font-family:'Rajdhani',sans-serif;font-size:38px;font-weight:700;color:#fff;line-height:1.1;margin-bottom:12px}
+.sec-sub{font-size:16px;color:var(--muted);line-height:1.7;max-width:520px}
+
+/* MODULES GRID */
+.modules-section{background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.modules-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:1px;background:var(--border);margin-top:48px;
+  border:1px solid var(--border);border-radius:12px;overflow:hidden;
+}
+.module-cell{
+  background:var(--panel);padding:24px 22px;
+  transition:background .15s;cursor:default;
+}
+.module-cell:hover{background:var(--panel2)}
+.module-icon{
+  width:40px;height:40px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+}
+.module-icon i{font-size:20px}
+.mod-r{background:rgba(226,75,74,0.12)} .mod-r i{color:#F09595}
+.mod-a{background:rgba(239,159,39,0.12)} .mod-a i{color:#FAC775}
+.mod-b{background:rgba(55,138,221,0.12)} .mod-b i{color:#85B7EB}
+.mod-g{background:rgba(93,202,165,0.12)} .mod-g i{color:#9FE1CB}
+.mod-p{background:rgba(127,119,221,0.12)} .mod-p i{color:#AFA9EC}
+.module-name{font-size:14px;font-weight:500;margin-bottom:5px;color:var(--text)}
+.module-desc{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* HOW IT WORKS */
+.flow-section{}
+.flow-steps{display:flex;align-items:flex-start;gap:0;margin-top:56px}
+.flow-step{flex:1;position:relative}
+.flow-step:not(:last-child)::after{
+  content:'';position:absolute;top:24px;left:calc(50% + 28px);
+  right:calc(-50% + 28px);height:1px;background:var(--border2);
+}
+.step-circle{
+  width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;
+  margin:0 auto 16px;
+  background:var(--panel2);border:1.5px solid var(--border2);color:var(--muted);
+}
+.flow-step.active .step-circle{background:var(--red-glow);border-color:rgba(226,75,74,0.4);color:var(--red)}
+.step-title{text-align:center;font-size:14px;font-weight:500;margin-bottom:5px}
+.step-desc{text-align:center;font-size:12px;color:var(--muted);line-height:1.5;padding:0 10px}
+
+/* ALERTS / NOTIFICATIONS SHOWCASE */
+.alerts-section{background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.alerts-showcase{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px;align-items:start}
+.alert-panel{background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.ap-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;border-bottom:1px solid var(--border);background:var(--panel2);
+}
+.ap-head-title{font-size:12px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:7px}
+.ap-head-title i{font-size:15px;color:var(--muted)}
+.ap-count{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}
+.alert-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:11px 14px;border-bottom:1px solid var(--border);
+}
+.alert-item:last-child{border-bottom:none}
+.alert-ico{
+  width:30px;height:30px;border-radius:7px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;margin-top:1px;
+}
+.alert-ico i{font-size:15px}
+.ai-red{background:rgba(226,75,74,0.15)} .ai-red i{color:#F09595}
+.ai-amb{background:rgba(239,159,39,0.15)} .ai-amb i{color:#FAC775}
+.ai-grn{background:rgba(93,202,165,0.15)} .ai-grn i{color:#9FE1CB}
+.ai-blu{background:rgba(55,138,221,0.15)} .ai-blu i{color:#85B7EB}
+.alert-text{flex:1}
+.alert-title{font-size:13px;font-weight:500;margin-bottom:2px}
+.alert-sub{font-size:11px;color:var(--muted)}
+.alert-time{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--dim);margin-top:2px}
+
+/* ADMIN SECTION */
+.admin-section{}
+.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
+.admin-card{
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;
+}
+.ac-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.ac-icon{
+  width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+}
+.ac-icon i{font-size:18px}
+.ac-title{font-size:14px;font-weight:500}
+.ac-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;
+}
+.ac-row:last-child{border-bottom:none}
+.ac-lbl{color:var(--muted)}
+.ac-val{font-weight:500;font-family:'IBM Plex Mono',monospace;font-size:12px}
+.ac-val.g{color:#5DCAA5}
+.ac-val.r{color:#F09595}
+.ac-val.a{color:#FAC775}
+
+/* EXPORT / HISTORY */
+.bottom-strip{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;
+  background:var(--border);border-top:1px solid var(--border);
+}
+.strip-cell{
+  background:var(--panel);padding:36px 32px;
+  display:flex;flex-direction:column;
+}
+.strip-icon{
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+}
+.strip-icon i{font-size:22px}
+.s-r{background:var(--red-glow)} .s-r i{color:#F09595}
+.s-g{background:var(--green-soft)} .s-g i{color:#5DCAA5}
+.s-b{background:var(--blue-soft)} .s-b i{color:#85B7EB}
+.strip-title{font-size:16px;font-weight:500;margin-bottom:6px}
+.strip-desc{font-size:13px;color:var(--muted);line-height:1.6;flex:1;margin-bottom:16px}
+.strip-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:7px;font-size:13px;font-weight:500;
+  background:var(--panel2);border:1px solid var(--border2);color:var(--text);
+  cursor:pointer;transition:all .15s;width:fit-content;
+}
+.strip-btn:hover{background:var(--panel3)}
+.strip-btn i{font-size:15px}
+
+/* FOOTER */
+footer{
+  border-top:1px solid var(--border);padding:28px 40px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.footer-brand{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;color:var(--muted)}
+.footer-brand span{color:var(--red)}
+.footer-copy{font-size:12px;color:var(--dim)}
+.footer-links{display:flex;gap:20px}
+.footer-link{font-size:12px;color:var(--muted);text-decoration:none;cursor:pointer}
+.footer-link:hover{color:var(--text)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="brand">
+    <div class="brand-icon"><i class="ti ti-ambulance" aria-hidden="true"></i></div>
+    <span class="brand-name">RAPID<span>911</span></span>
+  </div>
+  <div class="nav-links">
+    <a class="nav-link"><i class="ti ti-dashboard" aria-hidden="true"></i>Dashboard</a>
+    <a class="nav-link"><i class="ti ti-map-2" aria-hidden="true"></i>Map view</a>
+    <a class="nav-link"><i class="ti ti-clipboard-list" aria-hidden="true"></i>Incident log</a>
+    <a class="nav-link"><i class="ti ti-history" aria-hidden="true"></i>History</a>
+    <a class="nav-link"><i class="ti ti-settings" aria-hidden="true"></i>Admin</a>
+  </div>
+  <div class="nav-right">
+    <div class="live-pill"><div class="live-dot"></div>System online</div>
+    <div class="nav-clock" id="clock">--:--:--</div>
+    <div class="notif-ico"><i class="ti ti-bell" aria-hidden="true"></i><div class="notif-badge"></div></div>
+    <button class="btn-login">Sign in</button>
+    <button class="btn-dispatch"><i class="ti ti-send" aria-hidden="true"></i> Dispatch</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+  </div>
+
+  <div class="hero-left">
+    <div class="hero-tag"><i class="ti ti-shield-check" aria-hidden="true"></i>Emergency Dispatch Platform</div>
+    <h1>Every second<br>saves a <span>life</span></h1>
+    <p class="hero-sub">Real-time ambulance dispatch, GPS tracking, crew assignment, and incident management — built for paramedics who can't afford delays.</p>
+    <div class="hero-actions">
+      <button class="btn-primary"><i class="ti ti-player-play" aria-hidden="true"></i>LAUNCH DISPATCH</button>
+      <button class="btn-secondary"><i class="ti ti-map-2" aria-hidden="true"></i>View live map</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat">
+        <div class="hstat-num">4<span>m</span></div>
+        <div class="hstat-label">Avg response time</div>
+      </div>
+      <div class="hstat-sep"></div>
+      <div class="hstat">
+        <div class="hstat-num">24<span>/7</span></div>
+        <div class="hstat-label">Live monitoring</div>
+      </div>
+      <div class="hstat-sep"></div>
+      <div class="hstat">
+        <div class="hstat-num">98<span>%</span></div>
+        <div class="hstat-label">Dispatch accuracy</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini Dashboard Preview -->
+  <div class="hero-right">
+    <div class="dash-preview">
+      <div class="dp-bar">
+        <div class="dp-dots">
+          <div class="dp-dot" style="background:#E24B4A"></div>
+          <div class="dp-dot" style="background:#EF9F27"></div>
+          <div class="dp-dot" style="background:#5DCAA5"></div>
+        </div>
+        <div class="dp-title">rapid911 — dispatch center</div>
+      </div>
+      <div class="dp-body">
+        <!-- Metrics -->
+        <div class="dp-metrics">
+          <div class="dp-metric">
+            <div class="dp-metric-lbl">Active calls</div>
+            <div class="dp-metric-val r">7</div>
+          </div>
+          <div class="dp-metric">
+            <div class="dp-metric-lbl">Units out</div>
+            <div class="dp-metric-val a">5</div>
+          </div>
+          <div class="dp-metric">
+            <div class="dp-metric-lbl">Available</div>
+            <div class="dp-metric-val g">3</div>
+          </div>
+          <div class="dp-metric">
+            <div class="dp-metric-lbl">Avg ETA</div>
+            <div class="dp-metric-val b">6m</div>
+          </div>
+        </div>
+        <!-- Mini Map -->
+        <div class="dp-map">
+          <svg viewBox="0 0 420 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="420" height="180" fill="#0d1219"/>
+            <g stroke="#1d2535" stroke-width="14" fill="none">
+              <line x1="0" y1="60" x2="420" y2="60"/>
+              <line x1="0" y1="120" x2="420" y2="120"/>
+              <line x1="90" y1="0" x2="90" y2="180"/>
+              <line x1="210" y1="0" x2="210" y2="180"/>
+              <line x1="330" y1="0" x2="330" y2="180"/>
+            </g>
+            <g fill="#12192a" opacity="0.8">
+              <rect x="10" y="8" width="66" height="38" rx="2"/>
+              <rect x="105" y="8" width="90" height="38" rx="2"/>
+              <rect x="225" y="8" width="90" height="38" rx="2"/>
+              <rect x="345" y="8" width="62" height="38" rx="2"/>
+              <rect x="10" y="70" width="66" height="38" rx="2"/>
+              <rect x="105" y="70" width="90" height="38" rx="2"/>
+              <rect x="225" y="70" width="90" height="38" rx="2"/>
+              <rect x="345" y="70" width="62" height="38" rx="2"/>
+              <rect x="10" y="130" width="66" height="38" rx="2"/>
+              <rect x="105" y="130" width="90" height="38" rx="2"/>
+              <rect x="225" y="130" width="90" height="38" rx="2"/>
+              <rect x="345" y="130" width="62" height="38" rx="2"/>
+            </g>
+            <!-- Hospital -->
+            <circle cx="210" cy="90" r="12" fill="#0C447C" opacity="0.7"/>
+            <circle cx="210" cy="90" r="8" fill="#185FA5"/>
+            <text x="210" y="94" text-anchor="middle" font-size="8" fill="#B5D4F4" font-weight="700">H</text>
+            <!-- Incidents -->
+            <circle cx="130" cy="42" r="8" fill="rgba(226,75,74,0.2)" stroke="#E24B4A" stroke-width="1.2" class="blink-dot"/>
+            <circle cx="130" cy="42" r="4" fill="#E24B4A"/>
+            <circle cx="300" cy="100" r="7" fill="rgba(239,159,39,0.2)" stroke="#EF9F27" stroke-width="1.2"/>
+            <circle cx="300" cy="100" r="3" fill="#EF9F27"/>
+            <circle cx="60" cy="140" r="6" fill="rgba(55,138,221,0.2)" stroke="#378ADD" stroke-width="1.2"/>
+            <circle cx="60" cy="140" r="3" fill="#378ADD"/>
+            <!-- Ambulances -->
+            <rect x="108" y="56" width="16" height="10" rx="2" fill="#185FA5" stroke="#378ADD" stroke-width="0.8"/>
+            <text x="116" y="64" text-anchor="middle" font-size="5" fill="#B5D4F4" font-weight="700">A1</text>
+            <line x1="116" y1="56" x2="130" y2="50" stroke="#378ADD" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.6"/>
+            <rect x="280" y="112" width="16" height="10" rx="2" fill="#185FA5" stroke="#378ADD" stroke-width="0.8"/>
+            <text x="288" y="120" text-anchor="middle" font-size="5" fill="#B5D4F4" font-weight="700">A2</text>
+            <rect x="360" y="72" width="16" height="10" rx="2" fill="#3B6D11" stroke="#639922" stroke-width="0.8"/>
+            <text x="368" y="80" text-anchor="middle" font-size="5" fill="#C0DD97" font-weight="700">A4</text>
+          </svg>
+        </div>
+        <!-- Incidents -->
+        <div class="dp-inc-list">
+          <div class="dp-inc crit">
+            <div style="flex:1">
+              <div class="dp-inc-type">Cardiac Arrest</div>
+              <div class="dp-inc-loc">14 Park Ave · Zone B</div>
+            </div>
+            <span class="dp-badge crit">Critical</span>
+            <span class="dp-inc-time">08:14</span>
+          </div>
+          <div class="dp-inc high">
+            <div style="flex:1">
+              <div class="dp-inc-type">Road Accident</div>
+              <div class="dp-inc-loc">Highway 7 · Zone C</div>
+            </div>
+            <span class="dp-badge high">High</span>
+            <span class="dp-inc-time">08:19</span>
+          </div>
+          <div class="dp-inc med">
+            <div style="flex:1">
+              <div class="dp-inc-type">Fall Injury</div>
+              <div class="dp-inc-loc">22 Oak St · Zone A</div>
+            </div>
+            <span class="dp-badge med">Medium</span>
+            <span class="dp-inc-time">08:22</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES GRID -->
+<section class="modules-section">
+  <div style="padding:60px 40px 0">
+    <div class="sec-tag"><i class="ti ti-layout-grid" aria-hidden="true"></i>Platform modules</div>
+    <h2 class="sec-title">Everything dispatch needs</h2>
+    <p class="sec-sub">Ten purpose-built modules covering the full emergency response lifecycle — from first call to incident closure.</p>
+  </div>
+  <div style="padding:0 40px 60px">
+    <div class="modules-grid">
+      <div class="module-cell">
+        <div class="module-icon mod-r"><i class="ti ti-send" aria-hidden="true"></i></div>
+        <div class="module-name">Dispatch form</div>
+        <div class="module-desc">Log emergency calls with type, location, caller info, and immediate priority assignment.</div>
+      </div>
+      <div class="module-cell">
+        <div class="module-icon mod-b"><i class="ti ti-map-2" aria-hidden="true"></i></div>
+        <div class="module-name">Map view</div>
+        <div class="module-desc">Live city grid with real-time GPS positions for all active units and incident markers.</div>
+      </div>
+      <div class="module-cell">
+        <div class="module-icon mod-a"><i class="ti ti-user-plus" aria-hidden="true"></i></div>
+        <div class="module-name">Crew assign</div>
+        <div class="module-desc">Assign paramedic crews to ambulances and match nearest available unit to each call.</div>
+      </div>
+      <div class="module-cell">
+        <div class="module-icon mod-g"><i class="ti ti-activity" aria-hidden="true"></i></div>
+        <div class="module-name">Status tracker</div>
+        <div class="module-desc">Monitor unit state in real time — available, dispatched, on-scene, or returning.</div>
+      </div>
+      <div class="module-cell">
+        <div class="module-icon mod-p"><i class="ti ti-clipboard-list" aria-hidden="true"></i></div>
+        <div class="module-name">Incident log</div>
+        <div class="module-desc">Full record of all incidents with timestamps, crew notes, and outcome tagging.</div>
+      </div>
+      <div class="module-cell">
+        <div class="module-icon mod-r"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
+        <div class="module-name">Priority badge</div>
+        <div class="module-desc">Automatic Critical / High / Medium / Low classification based on call type and vitals.</div>
+      </div>
+      <div class="module-cell">
+        <div class="module-icon mod-b"><i class="ti ti-history" aria-hidden="true"></i></div>
+        <div class="module-name">History</div>
+        <div class="module-desc">Searchable archive of past incidents filtered by date, unit, zone, or outcome.</div>
+      </div>
+      <div class="module-cell">
+        <div class="module-icon mod-g"><i class="ti ti-download" aria-hidden="true"></i></div>
+        <div class="module-name">Export</div>
+        <div class="module-desc">Download incident reports as CSV or PDF for handover, audit, and compliance.</div>
+      </div>
+      <div class="module-cell">
+        <div class="module-icon mod-a"><i class="ti ti-bell" aria-hidden="true"></i></div>
+        <div class="module-name">Notifications</div>
+        <div class="module-desc">Real-time push alerts for new calls, unit status changes, and critical escalations.</div>
+      </div>
+      <div class="module-cell">
+        <div class="module-icon mod-p"><i class="ti ti-shield" aria-hidden="true"></i></div>
+        <div class="module-name">Admin panel</div>
+        <div class="module-desc">Manage users, zones, fleet inventory, crew rosters, and system configuration.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="flow-section">
+  <div class="sec-tag"><i class="ti ti-route" aria-hidden="true"></i>Workflow</div>
+  <h2 class="sec-title">From call to scene in minutes</h2>
+  <p class="sec-sub">A streamlined five-step process ensures the right unit reaches every emergency as fast as possible.</p>
+  <div class="flow-steps">
+    <div class="flow-step active">
+      <div class="step-circle">01</div>
+      <div class="step-title">Call received</div>
+      <div class="step-desc">Dispatcher logs emergency type, location, and caller details into the form.</div>
+    </div>
+    <div class="flow-step">
+      <div class="step-circle">02</div>
+      <div class="step-title">Priority assigned</div>
+      <div class="step-desc">System auto-classifies severity and flags critical calls for immediate action.</div>
+    </div>
+    <div class="flow-step">
+      <div class="step-circle">03</div>
+      <div class="step-title">Unit matched</div>
+      <div class="step-desc">Nearest available ambulance and crew are identified on the live map.</div>
+    </div>
+    <div class="flow-step">
+      <div class="step-circle">04</div>
+      <div class="step-title">Dispatched</div>
+      <div class="step-desc">Crew receives alert, unit status updates, and route is tracked in real time.</div>
+    </div>
+    <div class="flow-step">
+      <div class="step-circle">05</div>
+      <div class="step-title">Incident closed</div>
+      <div class="step-desc">Outcome is logged, unit cleared, and report auto-generated for records.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ALERTS SHOWCASE -->
+<section class="alerts-section">
+  <div style="padding:60px 40px 0">
+    <div class="sec-tag"><i class="ti ti-bell" aria-hidden="true"></i>Notifications & activity</div>
+    <h2 class="sec-title">Nothing slips through</h2>
+    <p class="sec-sub">A live activity feed and push notification system keep every dispatcher fully aware, every moment.</p>
+  </div>
+  <div style="padding:24px 40px 60px">
+    <div class="alerts-showcase">
+      <!-- Notifications panel -->
+      <div class="alert-panel">
+        <div class="ap-head">
+          <div class="ap-head-title"><i class="ti ti-bell" aria-hidden="true"></i>Live notifications</div>
+          <div class="ap-count">4 unread</div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-ico ai-red"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
+          <div class="alert-text">
+            <div class="alert-title">Critical — Cardiac Arrest</div>
+            <div class="alert-sub">INC-001 · 14 Park Ave · Unattended for 2 min</div>
+            <div class="alert-time">08:14</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-ico ai-amb"><i class="ti ti-ambulance" aria-hidden="true"></i></div>
+          <div class="alert-text">
+            <div class="alert-title">AMB-02 dispatched</div>
+            <div class="alert-sub">Road accident on Highway 7 · ETA 5 min</div>
+            <div class="alert-time">08:19</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-ico ai-grn"><i class="ti ti-check" aria-hidden="true"></i></div>
+          <div class="alert-text">
+            <div class="alert-title">AMB-06 now available</div>
+            <div class="alert-sub">Cleared from INC-048 · Zone A · Ready for dispatch</div>
+            <div class="alert-time">08:15</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-ico ai-blu"><i class="ti ti-user-plus" aria-hidden="true"></i></div>
+          <div class="alert-text">
+            <div class="alert-title">Crew reassigned</div>
+            <div class="alert-sub">Singh / Patel → AMB-01 · INC-001</div>
+            <div class="alert-time">08:20</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity feed -->
+      <div class="alert-panel">
+        <div class="ap-head">
+          <div class="ap-head-title"><i class="ti ti-activity" aria-hidden="true"></i>Activity feed</div>
+          <div class="ap-count">Today</div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-ico ai-red"><i class="ti ti-send" aria-hidden="true"></i></div>
+          <div class="alert-text">
+            <div class="alert-title">AMB-05 → INC-004</div>
+            <div class="alert-sub">Stroke call dispatched · River Rd Zone D</div>
+            <div class="alert-time">08:25</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-ico ai-grn"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
+          <div class="alert-text">
+            <div class="alert-title">AMB-03 on scene</div>
+            <div class="alert-sub">Arrived 22 Oak St · INC-003 · Fall injury</div>
+            <div class="alert-time">08:22</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-ico ai-amb"><i class="ti ti-clock" aria-hidden="true"></i></div>
+          <div class="alert-text">
+            <div class="alert-title">INC-001 priority escalated</div>
+            <div class="alert-sub">Auto-flagged Critical after vitals update</div>
+            <div class="alert-time">08:16</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-ico ai-blu"><i class="ti ti-file-description" aria-hidden="true"></i></div>
+          <div class="alert-text">
+            <div class="alert-title">INC-039 closed &amp; exported</div>
+            <div class="alert-sub">Report generated · PDF ready for download</div>
+            <div class="alert-time">08:10</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADMIN SECTION -->
+<section class="admin-section">
+  <div class="sec-tag"><i class="ti ti-settings" aria-hidden="true"></i>Admin panel</div>
+  <h2 class="sec-title">Total operational control</h2>
+  <p class="sec-sub">Administrators manage fleet, staff, zones, and configurations from a unified control panel.</p>
+  <div class="admin-grid">
+    <div class="admin-card">
+      <div class="ac-head">
+        <div class="ac-icon mod-b"><i class="ti ti-ambulance" aria-hidden="true"></i></div>
+        <div class="ac-title">Fleet status</div>
+      </div>
+      <div class="ac-row"><span class="ac-lbl">Total units</span><span class="ac-val">8</span></div>
+      <div class="ac-row"><span class="ac-lbl">Dispatched</span><span class="ac-val r">5</span></div>
+      <div class="ac-row"><span class="ac-lbl">Available</span><span class="ac-val g">3</span></div>
+      <div class="ac-row"><span class="ac-lbl">Maintenance</span><span class="ac-val a">1</span></div>
+      <div class="ac-row"><span class="ac-lbl">Last sync</span><span class="ac-val" style="color:var(--muted)">08:33:12</span></div>
+    </div>
+    <div class="admin-card">
+      <div class="ac-head">
+        <div class="ac-icon mod-g"><i class="ti ti-users" aria-hidden="true"></i></div>
+        <div class="ac-title">Crew roster</div>
+      </div>
+      <div class="ac-row"><span class="ac-lbl">On shift</span><span class="ac-val g">16</span></div>
+      <div class="ac-row"><span class="ac-lbl">On call</span><span class="ac-val a">6</span></div>
+      <div class="ac-row"><span class="ac-lbl">Off duty</span><span class="ac-val" style="color:var(--muted)">8</span></div>
+      <div class="ac-row"><span class="ac-lbl">Dispatchers active</span><span class="ac-val g">3</span></div>
+      <div class="ac-row"><span class="ac-lbl">Shift ends</span><span class="ac-val" style="color:var(--muted)">20:00:00</span></div>
+    </div>
+    <div class="admin-card">
+      <div class="ac-head">
+        <div class="ac-icon mod-a"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
+        <div class="ac-title">Zone coverage</div>
+      </div>
+      <div class="ac-row"><span class="ac-lbl">Zone A</span><span class="ac-val g">Covered · AMB-04</span></div>
+      <div class="ac-row"><span class="ac-lbl">Zone B</span><span class="ac-val g">Covered · AMB-01</span></div>
+      <div class="ac-row"><span class="ac-lbl">Zone C</span><span class="ac-val g">Covered · AMB-02</span></div>
+      <div class="ac-row"><span class="ac-lbl">Zone D</span><span class="ac-val a">Partial · AMB-05</span></div>
+      <div class="ac-row"><span class="ac-lbl">Backup zone</span><span class="ac-val" style="color:var(--muted)">AMB-06 standby</span></div>
+    </div>
+    <div class="admin-card">
+      <div class="ac-head">
+        <div class="ac-icon mod-p"><i class="ti ti-chart-bar" aria-hidden="true"></i></div>
+        <div class="ac-title">Today's summary</div>
+      </div>
+      <div class="ac-row"><span class="ac-lbl">Total incidents</span><span class="ac-val">43</span></div>
+      <div class="ac-row"><span class="ac-lbl">Resolved</span><span class="ac-val g">36</span></div>
+      <div class="ac-row"><span class="ac-lbl">Active</span><span class="ac-val r">7</span></div>
+      <div class="ac-row"><span class="ac-lbl">Avg response</span><span class="ac-val g">4m 12s</span></div>
+      <div class="ac-row"><span class="ac-lbl">Reports exported</span><span class="ac-val">12</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPORT / HISTORY / DOCS STRIP -->
+<div class="bottom-strip">
+  <div class="strip-cell">
+    <div class="strip-icon s-g"><i class="ti ti-history" aria-hidden="true"></i></div>
+    <div class="strip-title">Incident history</div>
+    <div class="strip-desc">Browse and search every past emergency with filters by date, zone, crew, priority, or outcome type.</div>
+    <button class="strip-btn"><i class="ti ti-arrow-right" aria-hidden="true"></i>View history</button>
+  </div>
+  <div class="strip-cell">
+    <div class="strip-icon s-r"><i class="ti ti-download" aria-hidden="true"></i></div>
+    <div class="strip-title">Export reports</div>
+    <div class="strip-desc">Download daily, weekly, or custom-range incident reports in CSV or PDF format for audit and handover.</div>
+    <button class="strip-btn"><i class="ti ti-file-export" aria-hidden="true"></i>Export data</button>
+  </div>
+  <div class="strip-cell">
+    <div class="strip-icon s-b"><i class="ti ti-book" aria-hidden="true"></i></div>
+    <div class="strip-title">Documentation</div>
+    <div class="strip-desc">API references, dispatcher training guides, REST endpoint docs, and system integration manuals.</div>
+    <button class="strip-btn"><i class="ti ti-external-link" aria-hidden="true"></i>Read docs</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">RAPID<span>911</span></div>
+  <div class="footer-copy">© 2026 Rapid911 Emergency Systems. All rights reserved.</div>
+  <div class="footer-links">
+    <a class="footer-link">Privacy</a>
+    <a class="footer-link">Terms</a>
+    <a class="footer-link">Support</a>
+    <a class="footer-link">Contact</a>
+  </div>
+</footer>
+
+<script>
+function tick(){
+  const t=new Date();
+  document.getElementById('clock').textContent=t.toTimeString().slice(0,8);
+}
+setInterval(tick,1000);tick();
+</script>
+</body>
+</html>
