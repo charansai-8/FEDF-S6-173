@@ -1,0 +1,97 @@
+/* Main layout structure */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.main-layout {
+  display: flex;
+  flex: 1;
+  margin-top: 56px; /* Offset for top Navbar */
+}
+
+/* Sidebar navigation */
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: #1e293b; /* Dark slate background */
+  color: #f8fafc;
+  position: fixed;
+  top: 56px;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  padding: 1.5rem 0;
+  transition: all 0.3s ease;
+  overflow-y: auto;
+}
+
+.sidebar .nav-link {
+  color: #cbd5e1;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-left: 4px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.sidebar .nav-link:hover {
+  color: #f8fafc;
+  background-color: #334155;
+}
+
+.sidebar .nav-link.active {
+  color: #ffffff;
+  background-color: #0f172a;
+  border-left-color: var(--primary-teal);
+}
+
+.sidebar .nav-link i {
+  font-size: 1.1rem;
+}
+
+/* Main Content Area */
+.content-wrapper {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 2rem;
+  min-width: 0; /* Prevents flex items from breaking layout on smaller viewports */
+  background-color: #f8fafc;
+}
+
+/* Top Navbar styling */
+.navbar-custom {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.navbar-brand-custom {
+  font-weight: 800;
+  color: var(--primary-teal) !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Page headers */
+.page-title {
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive adjustment for screens smaller than the sidebar width */
+@media (max-width: 991.98px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.show {
+    transform: translateX(0);
+  }
+  .content-wrapper {
+    margin-left: 0;
+    padding: 1.25rem;
+  }
+}
